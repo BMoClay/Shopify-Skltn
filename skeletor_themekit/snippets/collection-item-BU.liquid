@@ -1,0 +1,68 @@
+
+{% capture variantImages %}  {% endcapture %}
+
+
+
+{% assign title_string = product.selected_or_first_available_variant.title | split: '/' %}
+
+{%- for word in title_string -%}
+{%- if forloop.index == 2 -%}
+{% assign colorTitle = word | strip | replace: ' ', ''  %}
+{%- endif -%}
+{%- endfor -%}
+
+      <div class="product-collection-item{% unless product.available %}sold-out{% endunless %} {% if forloop.last and isOdd %}small--hide{%endif%}"  tabindex="0" data-variantsAvailable="{{filterVariants}}" data-productType="{{product.type}}" data-productId="product-{{ product.id }}" id="product-{{ product.id }}">
+        {% if product.featured_image != blank %}
+
+
+          <div class="product-image-container" >
+            <a class="product-image featured-product-image variant-color-{{ colorTitle }} {% if slider_child == true %} slide-opacity {% endif %} " href="{{ product.url | within: collection }}">
+              <img class="{% if template != "collection.v2" and template != "collection" %}slide-opacity{% endif %}  " src="{{ product.featured_image.src | img_url: '800x800' }}" alt="">
+            </a>
+          </div>
+        {% endif %}
+
+
+        <div class="product-info " >
+          <p class="product-title">{{ product.title }}</p>
+          <p class="product-price">
+
+
+            {% if product.compare_at_price > product.price %}
+
+              {% if product.price_varies %}
+                {%- assign sale_price = product.price | money -%}
+                {{ 'products.product.on_sale_from_html' | t: price: sale_price }}
+              {% else %}
+                {{ 'products.product.on_sale' | t }}
+                {{ product.price | money }}
+              {% endif %}
+
+            {% else %}
+
+              {% if product.price_varies %}
+                {%- assign price = product.price | money -%}
+                {{ 'products.product.from_text_html' | t: price: price }}
+              {% else %}
+                {{ product.price | money | remove: '.00' }}
+              {% endif %}
+
+            {% endif %}
+
+            {% if product.compare_at_price > product.price %}
+              <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+              <s>{{ product.compare_at_price | money }}</s>
+            {% endif %}
+
+            {% unless product.available %}
+              {{ 'products.product.sold_out' | t }}
+            {% endunless %}
+          </p>
+
+
+
+
+        </div>
+
+
+      </div>

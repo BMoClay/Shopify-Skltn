@@ -1,0 +1,106 @@
+<!-- header.liquid -->
+
+<style>
+  {% if section.settings.logo != blank %}
+    .site-header__logo-image {
+      max-width: {{ section.settings.logo_max_width }}px;
+      /* margin: auto; */
+    }
+  {% endif %}
+</style>
+
+{% include 'minicart' %}
+{% include 'announcement-bar' %}
+{% include "mobile-nav" %}
+
+  <nav class="grid-responsive-navbar wrapper" role="navigation">
+
+    <div class="logo small--hide">
+      <h1 class="h1" itemscope itemtype="http://schema.org/Organization">
+        <a href="/" itemprop="url" class="site-logo{% if section.settings.logo != blank %} site-header__logo-image{% endif %}">
+          {% if section.settings.logo != blank %}
+          {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
+          <img src="{{ section.settings.logo | img_url: image_size }}"
+          srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
+          alt="{{ section.settings.logo.alt | default: shop.name }}"
+          itemprop="logo">
+          {% else %}
+          {{ shop.name }}
+          {% endif %}
+        </a>
+      </h1>
+    </div>
+
+  {% include "grid-responsive-navbar"%}
+
+  <div class="logo mobile-logo small--show medium-up--hide">
+    <h1 class="h1" itemscope itemtype="http://schema.org/Organization">
+      <a href="/" itemprop="url" class="site-logo{% if section.settings.logo != blank %} site-header__logo-image{% endif %}">
+        {% if section.settings.logo != blank %}
+        {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
+        <img src="{{ section.settings.logo | img_url: image_size }}"
+        srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
+        alt="{{ section.settings.logo.alt | default: shop.name }}"
+        itemprop="logo">
+        {% else %}
+        {{ shop.name }}
+        {% endif %}
+      </a>
+    </h1>
+  </div>
+
+  <a class="cart-link medium-up--hide"  href="/cart">
+    {% include 'icon-cart' %}
+    {%- comment %}
+      This is a foo
+    {{ 'layout.cart.title' | t }}
+    {% endcomment -%}
+
+    <!-- <span class="cart-item-count"  data-cart-view="data-cart-view" rv-text="cart.item_count"> </span> -->
+  </a>
+
+
+{%- comment %}
+	This is a foo
+  <div class="">{% include "header-cp-nav" %}  </div>
+  {% endcomment -%}
+
+</nav>
+
+
+
+</div>
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "range",
+        "id": "logo_max_width",
+        "min": 20,
+        "max": 450,
+        "step": 10,
+        "unit": "px",
+        "label": "Custom logo width",
+        "default": 30
+      },
+      {
+        "type": "link_list",
+        "id": "main_linklist",
+        "label": "Menu",
+        "default": "main-menu"
+      },
+      {
+        "type": "link_list",
+        "id": "mobile_linklist",
+        "label": "Mobile Menu"
+      }
+    ]
+  }
+{% endschema %}

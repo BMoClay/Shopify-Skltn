@@ -1,0 +1,100 @@
+<!-- collection-slider.liquid -->
+
+<div class="collection-slider slideshow-height-{{ section.settings.slideshow_height }}">
+  {% for block in section.blocks limit: section.blocks.size %}
+  <div class="collection-list-item slideshow-slide" {{ block.shopify_attributes }}>
+    {%- assign collection = collections[block.settings.collection_title] -%}
+    <a href="{% if collection == empty %}#{% else %}{{ collection.url }}{% endif %}">
+      <div class="collection-list-image image-fit" style="height:{{section.settings.section-height}};" >
+        {% if collection.image != blank %}
+        {{ collection | img_url: '800x800' | img_tag: collection.title }}
+        {% elsif collection.products.first != blank %}
+        {{ collection.products.first | img_url: '800x' | img_tag: collection.title }}
+        {% elsif collection == empty %}
+        {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+        {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small' }}
+        {% endif %}
+				<h1 class="center italic">
+					{% if collection == empty %}
+					{{ 'homepage.onboarding.collection_title' | t }}
+					{% else %}
+					{{ collection.title }}
+					{% endif %}
+				</h1>
+      </div>
+    </a>
+
+  </div>
+  {% endfor %}
+</div>
+
+
+
+{% if section.blocks.size == 0 %}
+  {% include 'no-blocks' %}
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Collection Slider",
+    "max_blocks": 12,
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Collection Slider"
+      },
+			{
+				"type": "select",
+				"id": "slideshow_height",
+				"label": "Section height",
+				"default": "small",
+				"options": [
+					{
+						"label": "Small",
+						"value": "small"
+					},
+					{
+						"label": "Medium",
+						"value": "medium"
+					},
+					{
+						"label": "Large",
+						"value": "large"
+					}
+				]
+			}
+    ],
+    "blocks": [
+      {
+        "type": "Mycollection",
+        "name": "Collection",
+        "settings": [
+          {
+            "label": "Collection",
+            "id": "collection_title",
+            "type": "collection"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collection Slider 2",
+        "category": "Collection",
+        "blocks": [
+          {
+            "type": "Mycollection"
+          },
+          {
+            "type": "Mycollection"
+          },
+          {
+            "type": "Mycollection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

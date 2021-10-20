@@ -1,0 +1,119 @@
+<!-- collection-list.liquid -->
+
+
+
+	{% assign sectionLenghth = section.blocks.size %}
+    {% case sectionLenghth %}
+	{% when 5 %}
+    		{% assign selectedGrid = 'grid-2-3' | split:',' %}
+    {% when 4 %}
+    		{% assign selectedGrid = 'grid-2' | split:',' %}
+    {% when 3 %}
+    		{% assign selectedGrid = 'grid-3' | split:',' %}
+    {% when 2 %}
+    		{% assign selectedGrid = 'grid-2' | split:',' %}
+    {% when 1 %}
+   		    {% assign selectedGrid = '' | split:',' %}
+    {% endcase %}
+
+    {% assign mod = sectionLenghth | modulo: 2 %}
+    {% if mod == 0 %}
+      <!-- even -->
+      {% assign isOdd = false %}
+    {% else %}
+      <!-- odd -->
+      {% assign isOdd = true %}
+    {% endif %}
+
+
+<h1></h1>
+
+<div class="collection-list {{selectedGrid}}">
+  {% for block in section.blocks limit: section.blocks.size %}
+  <div class="collection-list-item {% if forloop.last and isOdd %}small--hide{%endif%}" {{ block.shopify_attributes }}>
+    {%- assign collection = collections[block.settings.collection] -%}
+    <a href="{% if collection == empty %}#{% else %}{{ collection.url }}{% endif %}">
+      <div class="collection-list-image image-fit" style="height:{{section.settings.section-height}};" >
+        {% if collection.image != blank %}
+        {{ collection | img_url: '480x480' | img_tag: collection.title }}
+        {% elsif collection.products.first != blank %}
+        {{ collection.products.first | img_url: '600x' | img_tag: collection.title }}
+        {% elsif collection == empty %}
+        {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+        {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small' }}
+        {% endif %}
+				<h1 class="center italic">
+					{% if collection == empty %}
+					{{ 'homepage.onboarding.collection_title' | t }}
+					{% else %}
+					{{ collection.title }}
+					{% endif %}
+				</h1>
+      </div>
+    </a>
+    <!-- <p>
+      {% if collection == empty %}
+      {{ 'homepage.onboarding.collection_title' | t }}
+      {% else %}
+      {{ collection.title }}
+      {% endif %}
+    </p> -->
+  </div>
+  {% endfor %}
+</div>
+
+
+{% if section.blocks.size == 0 %}
+  {% include 'no-blocks' %}
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Collection list",
+    "max_blocks": 12,
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Collection list"
+      },
+	  {
+        "type": "text",
+        "id": "section-height",
+        "label": "Input section height with px",
+        "default": "250px"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "Mycollection",
+        "name": "Collection",
+        "settings": [
+          {
+            "label": "Collection",
+            "id": "collectionid",
+            "type": "collection"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collection list",
+        "category": "Collection",
+        "blocks": [
+          {
+            "type": "Mycollection"
+          },
+          {
+            "type": "Mycollection"
+          },
+          {
+            "type": "Mycollection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

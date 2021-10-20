@@ -1,0 +1,6 @@
+development:
+  password: f5bdc0b7eccd620ffe168935a426f513
+  theme_id: 10201694243
+  store: bismuth.myshopify.com
+  ignore_files:
+    - settings_data.json
